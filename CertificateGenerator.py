@@ -16,7 +16,7 @@ def sendEmail():
             sender = '9898dalia@gmail.com'
             receiver = lines[0]
             #remove/change password before printing
-            password='nkzgyfdoviqzpwje' #empty for security reasons
+            password='' #empty for security reasons
             subject = 'Certificate of Participation for ' + lines[1]
             text = """Dear """ + lines[1] + """ ,
                                 Congratulations for successfully attending an ISTE approved E-Webinar on
