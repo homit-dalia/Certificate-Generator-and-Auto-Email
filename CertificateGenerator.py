@@ -5,6 +5,8 @@ import csv
 import urllib.request
 from fpdf import FPDF
 
+# import os 
+# os.system('python filename.py')
 #call each functions in sequence
 
 def sendEmail():
@@ -29,7 +31,7 @@ def sendEmail():
                             password,
                             subject,
                             text, 
-                            lines[1],
+                            lines[1], #name of pdf
                             "D:/Study - Extra/Python Projects/OutputCertificates") 
                             #change this directory
             k.email_send()
@@ -58,6 +60,7 @@ def createPDF():
 
             lenName = len(lines[1])
 
+            #code to dynamically add hyphen to the left and right of name
             nameInCertificate=''
             for i in range(int((60-lenName)/2)):
                 nameInCertificate+='-'
