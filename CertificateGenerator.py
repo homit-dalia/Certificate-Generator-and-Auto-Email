@@ -13,10 +13,12 @@ from email import encoders
 import smtplib
 from pathlib import Path
 
+
 sender = '9898dalia@gmail.com'
 receiver = 'homitdalia59@gmail.com'
 password='mqkkpdgpcywlyrce' #empty for security reasons
 
+#delete functions sendEmail and sendEmail2. The Send Email 3 function works flawlessly
 def sendEmail():
     with open('userData.csv', 'r') as csvfile:
         data = csv.reader(csvfile)
@@ -43,7 +45,6 @@ def sendEmail():
                             "OutputCertificates/") 
             k.email_send()
             print("Certificate sent")
-
 def sendEmail2():
     
 
@@ -102,6 +103,8 @@ def sendEmail3():
         smtp.ehlo()
         smtp.starttls()
         smtp.login(sender,password)
+
+
         smtp.send_message(msg)
         print("Email message sent")
 

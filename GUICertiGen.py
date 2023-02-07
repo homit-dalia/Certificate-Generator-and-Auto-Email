@@ -16,10 +16,11 @@ def createSecondWindowFunction():
 
     menuTabBar = Menu(secondWindow)
     secondWindow.config(menu=menuTabBar)
-    addMenu = Menu(menuTabBar,tearoff=0)
+    addMenu = Menu(menuTabBar,tearoff=0,font=("MV Boli",12))
 
     menuTabBar.add_cascade(label="Add", menu=addMenu)
     addMenu.add_command(label="Text", command=addTextField)
+    addMenu.add_separator()
     addMenu.add_command(label="Image", command=addImageField)
 
 
@@ -61,20 +62,56 @@ def createSecondWindowFunction():
     labelDynamicFields = Label(frameDynamicLabel, text="Dynamic Fields",fg="#303030", font=("Helvetica", 15), width=screen_width,height=1, bg='#A0A0A0', relief=SUNKEN, border=0)
     labelDynamicFields.pack(pady=20)
 
-    frameColumnNumbers = Frame(secondWindow)
-    frameColumnNumbers.pack()
+    frameNameColumn = Frame(secondWindow)
+    frameNameColumn.pack()
 
-    Label(frameColumnNumbers,text='"Name" Column : ', font=("Arial", 13)).pack(side=LEFT)
-    entryNameColumn = Entry(frameColumnNumbers, font=("Arial",17), width=3)
-    entryNameColumn.pack(side=LEFT, padx=5)
+    Label(frameNameColumn,text='"Name" Column : ', font=("Arial", 13)).pack(side=LEFT, pady=10)
+    entryNameColumn = Entry(frameNameColumn, font=("Arial",17), width=3)
+    entryNameColumn.pack(side=LEFT, padx=5, pady=10)
 
-    Label(frameColumnNumbers,text='"Email" Column : ', font=("Arial", 13)).pack(side=LEFT)
-    entryEmailColumn = Entry(frameColumnNumbers, font=("Arial",17), width=3)
-    entryEmailColumn.pack(side=LEFT, padx=5)
+    Label(frameNameColumn,text='X : ', font=("Arial", 13)).pack(side=LEFT, pady=10)
+    entryNameX = Entry(frameNameColumn, font=("Arial",17), width=3)
+    entryNameX.pack(side=LEFT, padx=5, pady=10)
 
-    Label(frameColumnNumbers,text='"Photo" Column : ', font=("Arial", 13)).pack(side=LEFT)
-    entryPhotoColumn = Entry(frameColumnNumbers, font=("Arial",17), width=3)
-    entryPhotoColumn.pack(side=LEFT, padx=5)
+    Label(frameNameColumn,text='Y : ', font=("Arial", 13)).pack(side=LEFT, pady=10)
+    entryNameY = Entry(frameNameColumn, font=("Arial",17), width=3)
+    entryNameY.pack(side=LEFT, padx=5, pady=10)
+
+    Label(frameNameColumn,text='Size : ', font=("Arial", 13)).pack(side=LEFT, pady=10)
+    entryNameSize = Entry(frameNameColumn, font=("Arial",17), width=3)
+    entryNameSize.pack(side=LEFT, padx=5, pady=10)
+
+    Label(frameNameColumn,text='Color : ', font=("Arial", 13)).pack(side=LEFT, pady=10)
+    entryNameColor = Entry(frameNameColumn, font=("Arial",17), width=3)
+    entryNameColor.pack(side=LEFT, padx=5, pady=10)
+
+    framePhotoColumn = Frame(secondWindow)
+    framePhotoColumn.pack()
+ 
+    Label(framePhotoColumn,text='"Photo" Column : ', font=("Arial", 13)).pack(side=LEFT, pady=10)
+    entryPhotoColumn = Entry(framePhotoColumn, font=("Arial",17), width=3)
+    entryPhotoColumn.pack(side=LEFT, padx=5, pady=10)
+
+    Label(framePhotoColumn,text='X : ', font=("Arial", 13)).pack(side=LEFT, pady=10)
+    entryNameX = Entry(framePhotoColumn, font=("Arial",17), width=3)
+    entryNameX.pack(side=LEFT, padx=5, pady=10)
+
+    Label(framePhotoColumn,text='Y : ', font=("Arial", 13)).pack(side=LEFT, pady=10)
+    entryNameY = Entry(framePhotoColumn, font=("Arial",17), width=3)
+    entryNameY.pack(side=LEFT, padx=5, pady=10)
+
+    Label(framePhotoColumn,text='Size : ', font=("Arial", 13)).pack(side=LEFT, pady=10)
+    entryNameSize = Entry(framePhotoColumn, font=("Arial",17), width=3)
+    entryNameSize.pack(side=LEFT, padx=5, pady=10)
+
+    
+
+    frameEmailColumn = Frame(secondWindow)
+    frameEmailColumn.pack()
+
+    Label(frameEmailColumn,text='"Email" Column : ', font=("Arial", 13)).pack(side=LEFT, pady=10)
+    entryEmailColumn = Entry(frameEmailColumn, font=("Arial",17), width=3)
+    entryEmailColumn.pack(side=LEFT, padx=5, pady=10)
 
     frameEmailLabel = Frame(secondWindow)
     frameEmailLabel.pack()
@@ -107,7 +144,7 @@ def createSecondWindowFunction():
 
     Label(secondWindow, text="Please go through README.md to understand every function in its entirety, \nfor example: your Email ID password is different from your email login \npassword, the steps to generate the same are mentioned in README.").pack(pady=20)
 
-    frameProceedButtons = Frame(secondWindow)
+    frameProceedButtons = Frame(secondWindow, bg="#f2ebee")
     frameProceedButtons.pack(side=BOTTOM)
 
     buttonGenerateTestCertificate = Button(frameProceedButtons, text="Generate Test Certificate")
