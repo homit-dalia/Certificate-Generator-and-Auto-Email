@@ -16,8 +16,11 @@ from pathlib import Path
 
 sender = '9898dalia@gmail.com'
 receiver = 'homitdalia59@gmail.com'
-password='mqkkpdgpcywlyrce' #empty for security reasons
+with open("password.txt", 'r') as f:
+    password=f.readline()
 
+ #empty for security reasons
+print(password)
 #delete functions sendEmail and sendEmail2. The Send Email 3 function works flawlessly
 def sendEmail():
     with open('userData.csv', 'r') as csvfile:
@@ -203,4 +206,4 @@ def createPDF():
     
 #imageDownloader()
 #createPDF()
-sendEmail3()
+#sendEmail3()

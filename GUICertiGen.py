@@ -55,10 +55,11 @@ def createSecondWindowFunction():
     labelStaticFields = Label(frameStaticLabel, text="Static Fields",fg="#303030", font=("Helvetica", 15), width=screen_width,height=1, bg='#A0A0A0', relief=SUNKEN, border=0)
     labelStaticFields.pack(pady=20)
 
+    checkButtonImage = Checkbutton(secondWindow, text="I have a Certificate Template", bg="#e6ffe6", font=(15)).pack()
+
     frameDynamicLabel = Frame(secondWindow)
     frameDynamicLabel.pack()
 
-    
     labelDynamicFields = Label(frameDynamicLabel, text="Dynamic Fields",fg="#303030", font=("Helvetica", 15), width=screen_width,height=1, bg='#A0A0A0', relief=SUNKEN, border=0)
     labelDynamicFields.pack(pady=20)
 
@@ -157,19 +158,6 @@ def createSecondWindowFunction():
     #Add a warning window
     buttonGenerateAllCertificates = Button(frameProceedButtons, text="Generate & Email - All")
     buttonGenerateAllCertificates.pack(side=LEFT,padx=7)
-
-
-
-
-
-    
-
-
-
-    
-
-
-
 
 
 def createFirstWindowFunction():
