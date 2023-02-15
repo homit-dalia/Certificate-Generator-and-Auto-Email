@@ -3,14 +3,158 @@ from tkinter import filedialog
 from tkinter import *
 import os
 
+import csv
+import urllib.request
+from fpdf import FPDF
+
+from email.mime.text import MIMEText
+from email.mime.application import MIMEApplication
+from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
+from email import encoders
+import smtplib
+from pathlib import Path
+
+
 def createSecondWindowFunction():
 
-    def addTextField():
-        print("Added Text Field")
+    def sendEmail(testEmail):
+        from_addr = entryEmailID.get()
+
+        if(testEmail):
+            to_addr = entryEmailID.get()
+
+        msg = MIMEMultipart()
+        msg['From'] = from_addr
+        msg['To'] = to_addr
+        msg['Subject'] = entryEmailSubject.get()
+        body = MIMEText(textEmailBody.get(1.0,END))
+        msg.attach(body)
+
+        fileName = 'OutputCertificates/' 
+        attachment = open(fileName, 'rb')
+        attachment_package = MIMEBase('application', 'octet-stream')
+        attachment_package.set_payload((attachment).read())
+        encoders.encode_base64(attachment_package)
+        attachment_package.add_header('Content-Disposition', "attachment; filename= " + fileName)
+        msg.attach(attachment_package)
+
+        
+
+        with smtplib.SMTP(host="smtp.gmail.com", port = 587) as smtp:
+            smtp.ehlo()
+            smtp.starttls()
+            smtp.login(entryEmailID.get(),entryEmailPassword.get())
+
+
+            smtp.send_message(msg)
+            print("Email message sent")
+
+
+
+    def imageDownloader():
+            with open('userData.csv', 'r') as csvfile:
+                data = csv.reader(csvfile)
+                for lines in data:
+                    url = lines[2]
+                    print ("Downloading image for " + lines[1])
+
+                    image_url = url
+    #does not work with drive links. Imgur or any other links ending with .jpg/.jpeg/.png works. Please use jpg or pjeg format
+                    filename = "ImageDisplay/" + lines[1] + ".jpg"
+                    urllib.request.urlretrieve(image_url, filename)
+
+                    print("Image Downloaded")
+
+    def createPDF():
+        with open('userData.csv', 'r') as csvfile:
+            data = csv.reader(csvfile)
+            for lines in data:
+                image = "Hello " + lines[0]
+                print ("Creating PDF for participant " + lines[1])
+
+                lenName = len(lines[1])
+
+                #code to dynamically add hyphen to the left and right of name
+                nameInCertificate=''
+                for i in range(int((60-lenName)/2)):
+                    nameInCertificate+='-'
+                nameInCertificate+=' '
+                nameInCertificate+=lines[1]
+                nameInCertificate+=' '
+                for i in range(int((60-lenName)/2)):
+                    nameInCertificate+='-'
+                    
+
+                #change directory
+                imagePath = "ImageDisplay/" + lines[1] + ".jpg"
+                fpdf = FPDF()
+                body = FPDF()
+                heading = FPDF()
+                bottomBold = FPDF()
+                bottomLight = FPDF()
+
+                fpdf.add_page('l')
+                body = fpdf
+                bottomBold = fpdf
+                bottomLight = fpdf
+                heading = fpdf
+
+                fpdf.set_font("Arial",size=50)
+                fpdf.set_text_color(48,107,149)
+                fpdf.add_link()
+                
+
+                fpdf.text(9,30,txt="Certificate of Participation")
+                fpdf.image("collegeLogo.png", 230,8,w=50)
+
+                heading.set_font("Helvetica",size=15)
+                heading.set_text_color(200,0,0)
+                heading.write(60,"C.K. Pithawala College of Engineering and Technology","https://ckpcet.ac.in/")
+                
+                body.set_font("Courier",size=21)
+                body.set_text_color(0,107,0)
+
+                body.multi_cell(0,10,"\n\n\n\n\n\n\n\n\n\n"); 
+                body.image(imagePath,240, 60, w = 35)
+                body.image("excellence.png", 15, 62, w = 40)
+            ##
+                fpdf.multi_cell(0, 10, "This is to certify that \n"+nameInCertificate+"\nfrom CKPCET has successfully participated in an E-Webinar on Machine Learning on October 20, 2022 organized at Computer Engineering Department.", border = 0)
+
+                bottomBold.set_font("Arial",size=17)
+                bottomBold.set_text_color(0,0,0)
+                bottomBold.text(5, 200, "Coordinator and Head, CO:")
+                bottomBold.text(240, 200, "Principal:")
+
+                bottomLight.set_font("Helvetica",size=14)
+                bottomLight.set_text_color(0,0,0)
+                bottomLight.text(5, 205, "Dr. Ami T. Choksi")
+                bottomLight.text(240, 205, "Dr. Anish H. Gandhi")
+
+                bottomLight.image("hodSign.png", 20, 180, w = 40 )
+                bottomLight.image("principalSign.png", 240, 177, w = 40 )
+
+                pdfName ="OutputCertificates/" + lines[1] + ".pdf"
+
+                body.output(pdfName)
+                fpdf.output(pdfName)
+                heading.output(pdfName)
+                bottomBold.output(pdfName)
+                bottomLight.output(pdfName)
+
+                print("PDF Created")
+        
+    #imageDownloader()
+    #createPDF()
+    #sendEmail()
+
+    def printBody():
+        print(textEmailBody.get(1.0,END))
+
+    def addFont():
+        print("Clicked Added Font")
     
-    def addImageField():
-        print("Added Image Field")
-    
+
     GUITitleName = projectName + " - Certificate Generator and Automatic Email"
     secondWindow = Tk()
 
@@ -18,12 +162,9 @@ def createSecondWindowFunction():
     secondWindow.config(menu=menuTabBar)
     addMenu = Menu(menuTabBar,tearoff=0,font=("MV Boli",12))
 
+    #change to just add font types from menubar
     menuTabBar.add_cascade(label="Add", menu=addMenu)
-    addMenu.add_command(label="Text", command=addTextField)
-    addMenu.add_separator()
-    addMenu.add_command(label="Image", command=addImageField)
-
-
+    addMenu.add_command(label="Font", command=addFont)
 
     secondWindow.title(GUITitleName)
     secondWindow.geometry('1249x640')
@@ -55,7 +196,21 @@ def createSecondWindowFunction():
     labelStaticFields = Label(frameStaticLabel, text="Static Fields",fg="#303030", font=("Helvetica", 15), width=screen_width,height=1, bg='#A0A0A0', relief=SUNKEN, border=0)
     labelStaticFields.pack(pady=20)
 
-    checkButtonImage = Checkbutton(secondWindow, text="I have a Certificate Template", bg="#e6ffe6", font=(15)).pack()
+    frameSelectTemplate = Frame(secondWindow)
+    frameSelectTemplate.pack()
+    Label(frameSelectTemplate, text="Select your Certificate Background/Template.",fg='#000000', font=("Arial",11)).pack(side=LEFT, pady=10)
+
+    def selectTemplateButton():
+        templateFileDIR = filedialog.askopenfilename(initialdir=os.curdir, title="Open an Image File", filetypes=(("JPEG File","*.jpg"),("PNG File","*.png"),("all files","*.*")))
+
+        print('Image File Selected: ', templateFileDIR)
+        labelTemplateSelectedName.config(text=templateFileDIR)
+
+
+    labelTemplateSelectedName = Label(frameSelectTemplate, text=" ",fg='#808080', font=("Arial",11))
+    labelTemplateSelectedName.pack(side=LEFT, padx= 10)
+    buttonSelectTemplate = Button(frameSelectTemplate, text="Select Image", command=selectTemplateButton)
+    buttonSelectTemplate.pack(side=LEFT, padx= 10)
 
     frameDynamicLabel = Frame(secondWindow)
     frameDynamicLabel.pack()
@@ -128,7 +283,7 @@ def createSecondWindowFunction():
     entryEmailID.pack(side=LEFT, padx= 7, pady=15)
 
     Label(frameEmailFields, text="Sender Password : ",font=("Arial",13) ).pack(side=LEFT, padx= 15, pady=15)
-    entryEmailPassword = Entry(frameEmailFields,font=("Arial",13), width= 22)
+    entryEmailPassword = Entry(frameEmailFields,font=("Arial",13), width= 22, show="*")
     entryEmailPassword.pack(side=LEFT, padx= 7, pady=15)
 
     frameEmailSubject = Frame(secondWindow)
@@ -140,8 +295,10 @@ def createSecondWindowFunction():
     frameEmailBody = Frame(secondWindow)
     frameEmailBody.pack()
     Label(frameEmailBody, text="Email Body : ",font=("Arial",13) ).pack(side=LEFT,padx= 15, pady=15)
-    entryEmailBody = Entry(frameEmailBody,font=("Arial",13),width= 50)
-    entryEmailBody.pack(side=LEFT,padx= 15, pady=15)
+    textEmailBody = Text(frameEmailBody,font=("Arial",13),width= 50, height=5)
+    textEmailBody.pack(side=LEFT,padx= 15, pady=15)
+
+
 
     Label(secondWindow, text="Please go through README.md to understand every function in its entirety, \nfor example: your Email ID password is different from your email login \npassword, the steps to generate the same are mentioned in README.").pack(pady=20)
 
@@ -152,13 +309,13 @@ def createSecondWindowFunction():
     buttonGenerateTestCertificate.pack(side=LEFT,padx=7)
 
     #Add a warning window to Send Test Email - Indicate that it will go to the first email from CSV or ask for an email in new window
-    buttonSendTestEmail = Button(frameProceedButtons, text="Send Test Email")
+    buttonSendTestEmail = Button(frameProceedButtons, text="Send Test Email", command=lambda: sendEmail(1))
     buttonSendTestEmail.pack(side=LEFT,padx=7)
 
     #Add a warning window
     buttonGenerateAllCertificates = Button(frameProceedButtons, text="Generate & Email - All")
-    buttonGenerateAllCertificates.pack(side=LEFT,padx=7)
-
+    buttonGenerateAllCertificates.pack()
+    
 
 def createFirstWindowFunction():
     firstWindow = Tk()
