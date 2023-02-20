@@ -140,8 +140,6 @@ def createframeMainFunction():
 
                 print("PDF Created")
         
-    def printBody():
-        print(textEmailBody.get(1.0,END))
 
     def addFont():
         print("Clicked Added Font")
@@ -158,9 +156,9 @@ def createframeMainFunction():
     addMenu.add_command(label="Font", command=addFont)
 
     secondWindow.title(GUITitleName)
-    secondWindow.geometry('1249x640')
+    secondWindow.geometry('1100x640')
 
-    secondWindow.resizable(True,True)
+    secondWindow.resizable(0,0)
 
 
     #scrollbar starts here
@@ -203,7 +201,7 @@ def createframeMainFunction():
     frameStaticLabel.pack()
 
     
-    labelStaticFields = Label(frameStaticLabel, text="Static Fields",fg="#303030", font=("Helvetica", 15), width=50,height=1, bg='#A0A0A0', relief=SUNKEN, border=0)
+    labelStaticFields = Label(frameStaticLabel, text="Static Fields",fg="#303030", font=("Helvetica", 15), width=100,height=1, bg='#A0A0A0', relief=SUNKEN, border=0)
     labelStaticFields.pack(pady=20)
 
     def addStaticFields():
@@ -227,7 +225,7 @@ def createframeMainFunction():
     frameDynamicLabel = Frame(frameMain)
     frameDynamicLabel.pack()
 
-    labelDynamicFields = Label(frameDynamicLabel, text="Dynamic Fields",fg="#303030", font=("Helvetica", 15), width=50,height=1, bg='#A0A0A0', relief=SUNKEN, border=0)
+    labelDynamicFields = Label(frameDynamicLabel, text="Dynamic Fields",fg="#303030", font=("Helvetica", 15), width=100,height=1, bg='#A0A0A0', relief=SUNKEN, border=0)
     labelDynamicFields.pack(pady=20)
 
     frameNameColumn = Frame(frameMain)
@@ -282,7 +280,7 @@ def createframeMainFunction():
     frameEmailLabel = Frame(frameMain)
     frameEmailLabel.pack()
 
-    labelEmailFields = Label(frameEmailLabel, text="Email Information",fg="#303030", font=("Helvetica", 15), width=50,height=1, bg='#A0A0A0', relief=SUNKEN, border=0)
+    labelEmailFields = Label(frameEmailLabel, text="Email Information",fg="#303030", font=("Helvetica", 15), width=100,height=1, bg='#A0A0A0', relief=SUNKEN, border=0)
     labelEmailFields.pack(pady=20)
 
     frameEmailFields = Frame(frameMain)
