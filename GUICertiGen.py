@@ -16,7 +16,7 @@ import smtplib
 from pathlib import Path
 
 
-def createSecondWindowFunction():
+def createframeMainFunction():
 
     def sendEmail(testEmail):
         from_addr = entryEmailID.get()
@@ -39,8 +39,6 @@ def createSecondWindowFunction():
         attachment_package.add_header('Content-Disposition', "attachment; filename= " + fileName)
         msg.attach(attachment_package)
 
-        
-
         with smtplib.SMTP(host="smtp.gmail.com", port = 587) as smtp:
             smtp.ehlo()
             smtp.starttls()
@@ -49,8 +47,6 @@ def createSecondWindowFunction():
 
             smtp.send_message(msg)
             print("Email message sent")
-
-
 
     def imageDownloader():
             with open('userData.csv', 'r') as csvfile:
@@ -144,17 +140,12 @@ def createSecondWindowFunction():
 
                 print("PDF Created")
         
-    #imageDownloader()
-    #createPDF()
-    #sendEmail()
-
     def printBody():
         print(textEmailBody.get(1.0,END))
 
     def addFont():
         print("Clicked Added Font")
     
-
     GUITitleName = projectName + " - Certificate Generator and Automatic Email"
     secondWindow = Tk()
 
@@ -171,7 +162,27 @@ def createSecondWindowFunction():
 
     secondWindow.resizable(True,True)
 
-    frameCSVFile = Frame(secondWindow)
+
+    #scrollbar starts here
+
+    frameMainScrollBar = Frame(secondWindow, width=100)
+    frameMainScrollBar.pack(fill=BOTH, expand=1)
+
+    canvas = Canvas(frameMainScrollBar,)
+    canvas.pack(side=LEFT, fill=BOTH, expand=1)
+
+    scrollbarMain = tk.Scrollbar(frameMainScrollBar, orient=VERTICAL, width=25, troughcolor="black", command=canvas.yview)
+    scrollbarMain.pack(side=RIGHT, fill=Y)
+
+    canvas.configure(yscrollcommand=scrollbarMain.set)
+    canvas.bind('<Configure>', lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+
+    frameMain =  Frame(canvas)
+    canvas.create_window((0,0), window=frameMain, anchor="nw")
+
+    #scrollbar code ends here
+
+    frameCSVFile = Frame(frameMain)
     frameCSVFile.pack()
     Label(frameCSVFile, text="Select your CSV file.",fg='#000000', font=("Arial",11)).pack(side=LEFT, pady=10)
 
@@ -181,7 +192,6 @@ def createSecondWindowFunction():
         print('CSV File Selected: ', csvFileDIR)
         labelCSVSelectedName.config(text=csvFileDIR)
 
-
     labelCSVSelectedName = Label(frameCSVFile, text=" ",fg='#808080', font=("Arial",11))
     labelCSVSelectedName.pack(side=LEFT, padx= 10)
     buttonSelectCSVFile = Button(frameCSVFile, text="Select CSV", command=selectCSVFileFunction)
@@ -189,14 +199,17 @@ def createSecondWindowFunction():
 
     screen_width = secondWindow.winfo_screenwidth()
 
-    frameStaticLabel = Frame(secondWindow)
+    frameStaticLabel = Frame(frameMain)
     frameStaticLabel.pack()
 
     
-    labelStaticFields = Label(frameStaticLabel, text="Static Fields",fg="#303030", font=("Helvetica", 15), width=screen_width,height=1, bg='#A0A0A0', relief=SUNKEN, border=0)
+    labelStaticFields = Label(frameStaticLabel, text="Static Fields",fg="#303030", font=("Helvetica", 15), width=50,height=1, bg='#A0A0A0', relief=SUNKEN, border=0)
     labelStaticFields.pack(pady=20)
 
-    frameSelectTemplate = Frame(secondWindow)
+    def addStaticFields():
+        Label(frameMain, text="Test Static field").pack()
+        Entry(frameMain).pack()
+    frameSelectTemplate = Frame(frameMain)
     frameSelectTemplate.pack()
     Label(frameSelectTemplate, text="Select your Certificate Background/Template.",fg='#000000', font=("Arial",11)).pack(side=LEFT, pady=10)
 
@@ -206,19 +219,18 @@ def createSecondWindowFunction():
         print('Image File Selected: ', templateFileDIR)
         labelTemplateSelectedName.config(text=templateFileDIR)
 
-
     labelTemplateSelectedName = Label(frameSelectTemplate, text=" ",fg='#808080', font=("Arial",11))
     labelTemplateSelectedName.pack(side=LEFT, padx= 10)
     buttonSelectTemplate = Button(frameSelectTemplate, text="Select Image", command=selectTemplateButton)
     buttonSelectTemplate.pack(side=LEFT, padx= 10)
 
-    frameDynamicLabel = Frame(secondWindow)
+    frameDynamicLabel = Frame(frameMain)
     frameDynamicLabel.pack()
 
-    labelDynamicFields = Label(frameDynamicLabel, text="Dynamic Fields",fg="#303030", font=("Helvetica", 15), width=screen_width,height=1, bg='#A0A0A0', relief=SUNKEN, border=0)
+    labelDynamicFields = Label(frameDynamicLabel, text="Dynamic Fields",fg="#303030", font=("Helvetica", 15), width=50,height=1, bg='#A0A0A0', relief=SUNKEN, border=0)
     labelDynamicFields.pack(pady=20)
 
-    frameNameColumn = Frame(secondWindow)
+    frameNameColumn = Frame(frameMain)
     frameNameColumn.pack()
 
     Label(frameNameColumn,text='"Name" Column : ', font=("Arial", 13)).pack(side=LEFT, pady=10)
@@ -238,10 +250,10 @@ def createSecondWindowFunction():
     entryNameSize.pack(side=LEFT, padx=5, pady=10)
 
     Label(frameNameColumn,text='Color : ', font=("Arial", 13)).pack(side=LEFT, pady=10)
-    entryNameColor = Entry(frameNameColumn, font=("Arial",17), width=3)
+    entryNameColor = Entry(frameNameColumn, font=("Arial",17), width=9)
     entryNameColor.pack(side=LEFT, padx=5, pady=10)
 
-    framePhotoColumn = Frame(secondWindow)
+    framePhotoColumn = Frame(frameMain)
     framePhotoColumn.pack()
  
     Label(framePhotoColumn,text='"Photo" Column : ', font=("Arial", 13)).pack(side=LEFT, pady=10)
@@ -260,22 +272,20 @@ def createSecondWindowFunction():
     entryNameSize = Entry(framePhotoColumn, font=("Arial",17), width=3)
     entryNameSize.pack(side=LEFT, padx=5, pady=10)
 
-    
-
-    frameEmailColumn = Frame(secondWindow)
+    frameEmailColumn = Frame(frameMain)
     frameEmailColumn.pack()
 
     Label(frameEmailColumn,text='"Email" Column : ', font=("Arial", 13)).pack(side=LEFT, pady=10)
     entryEmailColumn = Entry(frameEmailColumn, font=("Arial",17), width=3)
     entryEmailColumn.pack(side=LEFT, padx=5, pady=10)
 
-    frameEmailLabel = Frame(secondWindow)
+    frameEmailLabel = Frame(frameMain)
     frameEmailLabel.pack()
 
-    labelEmailFields = Label(frameEmailLabel, text="Email Information",fg="#303030", font=("Helvetica", 15), width=screen_width,height=1, bg='#A0A0A0', relief=SUNKEN, border=0)
+    labelEmailFields = Label(frameEmailLabel, text="Email Information",fg="#303030", font=("Helvetica", 15), width=50,height=1, bg='#A0A0A0', relief=SUNKEN, border=0)
     labelEmailFields.pack(pady=20)
 
-    frameEmailFields = Frame(secondWindow)
+    frameEmailFields = Frame(frameMain)
     frameEmailFields.pack()
 
     Label(frameEmailFields, text="Sender Email ID : ",font=("Arial",13) ).pack(side=LEFT, padx= 15, pady=15)
@@ -286,26 +296,24 @@ def createSecondWindowFunction():
     entryEmailPassword = Entry(frameEmailFields,font=("Arial",13), width= 22, show="*")
     entryEmailPassword.pack(side=LEFT, padx= 7, pady=15)
 
-    frameEmailSubject = Frame(secondWindow)
+    frameEmailSubject = Frame(frameMain)
     frameEmailSubject.pack()
     Label(frameEmailSubject, text="Email Subject : ",font=("Arial",13) ).pack(side=LEFT,padx= 15, pady=15)
     entryEmailSubject = Entry(frameEmailSubject,font=("Arial",13),width= 50)
     entryEmailSubject.pack(side=LEFT,padx= 15, pady=15)
 
-    frameEmailBody = Frame(secondWindow)
+    frameEmailBody = Frame(frameMain)
     frameEmailBody.pack()
     Label(frameEmailBody, text="Email Body : ",font=("Arial",13) ).pack(side=LEFT,padx= 15, pady=15)
     textEmailBody = Text(frameEmailBody,font=("Arial",13),width= 50, height=5)
     textEmailBody.pack(side=LEFT,padx= 15, pady=15)
 
+    Label(frameMain, text="Please go through README.md to understand every function in its entirety, \nfor example: your Email ID password is different from your email login \npassword, the steps to generate the same are mentioned in README.").pack(pady=20)
 
-
-    Label(secondWindow, text="Please go through README.md to understand every function in its entirety, \nfor example: your Email ID password is different from your email login \npassword, the steps to generate the same are mentioned in README.").pack(pady=20)
-
-    frameProceedButtons = Frame(secondWindow, bg="#f2ebee")
+    frameProceedButtons = Frame(frameMain, bg="#f2ebee")
     frameProceedButtons.pack(side=BOTTOM)
 
-    buttonGenerateTestCertificate = Button(frameProceedButtons, text="Generate Test Certificate")
+    buttonGenerateTestCertificate = Button(frameProceedButtons, text="Generate Test Certificate", command=addStaticFields)
     buttonGenerateTestCertificate.pack(side=LEFT,padx=7)
 
     #Add a warning window to Send Test Email - Indicate that it will go to the first email from CSV or ask for an email in new window
@@ -315,6 +323,8 @@ def createSecondWindowFunction():
     #Add a warning window
     buttonGenerateAllCertificates = Button(frameProceedButtons, text="Generate & Email - All")
     buttonGenerateAllCertificates.pack()
+
+
     
 
 def createFirstWindowFunction():
@@ -342,7 +352,7 @@ def createFirstWindowFunction():
         except:
             print("An error occured - Directory already exists. ")
         
-        createSecondWindowFunction()
+        createframeMainFunction()
         firstWindow.destroy()
 
 
