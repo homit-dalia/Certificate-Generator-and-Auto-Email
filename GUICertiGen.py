@@ -48,28 +48,29 @@ def createframeMainFunction():
                         print("Sending Test Email to : " + entryEmailID.get())
 
                     else:
-                        msg['To'] = lines[int(entryEmailColumn.get())]
-                        print("Sending Email to : " + lines[int(entryEmailColumn.get())])
+                        msg['To'] = lines[int(entryEmailColumn.get())-1]
+                        print("Sending Email to : " + lines[int(entryEmailColumn.get())-1])
 
-                    #try:
-                    attachmentCertificateName = 'OutputCertificates/' +  lines[int(entryNameColumn.get())] + ".pdf"
-                    attachment = open(attachmentCertificateName, 'rb')
-                    attachment_package = MIMEBase('application', 'octet-stream')
-                    attachment_package.set_payload((attachment).read())
-                    encoders.encode_base64(attachment_package)
-                    attachment_package.add_header('Content-Disposition', "attachment; filename= " + attachmentCertificateName)
-                    msg.attach(attachment_package)
-                    #except:
-                        #print("Could not fetch/open certificate for participant - " + lines[int(entryNameColumn.get())])
+                    try:
+                        attachmentCertificateName = projectName + 'OutputCertificates/' +  lines[int(entryNameColumn.get())-1] + ".pdf"
+                        attachment = open(attachmentCertificateName, 'rb')
+                        attachment_package = MIMEBase('application', 'octet-stream')
+                        attachment_package.set_payload((attachment).read())
+                        encoders.encode_base64(attachment_package)
+                        attachment_package.add_header('Content-Disposition', "attachment; filename= " + attachmentCertificateName)
+                        msg.attach(attachment_package)
+                    except:
+                        print("Could not fetch/open certificate for participant - " + lines[int(entryNameColumn.get())-1])
+
                     try:
                         with smtplib.SMTP(host="smtp.gmail.com", port = 587) as smtp:
                             smtp.ehlo()
                             smtp.starttls()
                             smtp.login(entryEmailID.get(),entryEmailPassword.get())
                             smtp.send_message(msg)
-                            print("Email sent to " + lines[int(entryEmailColumn.get())])
+                            print("Email sent to " + lines[int(entryEmailColumn.get())-1])
                     except:
-                        print("Error sending email to : " + lines[int(entryNameColumn.get())] + ". Participant - " + lines[int(entryNameColumn.get())]+". Please try sending them an email manually. Possible reason - Bad Email Address.")
+                        print("Error sending email to : participant - " + lines[int(entryNameColumn.get())-1]+". Please try sending them an email manually. Possible reason - Bad Email Address.")
                     
                     if(testEmail):
                         break
