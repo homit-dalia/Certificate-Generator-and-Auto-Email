@@ -19,34 +19,60 @@ from pathlib import Path
 def createframeMainFunction():
 
     def sendEmail(testEmail):
+        
+        #fixed fields in email
         from_addr = entryEmailID.get()
-
-        if(testEmail):
-            to_addr = entryEmailID.get()
-
         msg = MIMEMultipart()
         msg['From'] = from_addr
-        msg['To'] = to_addr
         msg['Subject'] = entryEmailSubject.get()
         body = MIMEText(textEmailBody.get(1.0,END))
         msg.attach(body)
 
-        fileName = 'OutputCertificates/' 
-        attachment = open(fileName, 'rb')
-        attachment_package = MIMEBase('application', 'octet-stream')
-        attachment_package.set_payload((attachment).read())
-        encoders.encode_base64(attachment_package)
-        attachment_package.add_header('Content-Disposition', "attachment; filename= " + fileName)
-        msg.attach(attachment_package)
+        try:
+            with smtplib.SMTP(host="smtp.gmail.com", port = 587) as smtp:
+                smtp.ehlo()
+                smtp.starttls()
+                smtp.login(entryEmailID.get(),entryEmailPassword.get())
+                incorrectEmailIDPassword = False
+        except:
+            incorrectEmailIDPassword = True
+            print("Email ID and/or password is incorrect. Please try again.")
 
-        with smtplib.SMTP(host="smtp.gmail.com", port = 587) as smtp:
-            smtp.ehlo()
-            smtp.starttls()
-            smtp.login(entryEmailID.get(),entryEmailPassword.get())
+        if(incorrectEmailIDPassword == False):
+            with open(labelCSVSelectedName.cget("text"), 'r') as csvfile:
+                
+                csvData = csv.reader(csvfile)
+                for lines in csvData:
+                    if(testEmail):
+                        msg['To'] = entryEmailID.get()
+                        print("Sending Test Email to : " + entryEmailID.get())
 
+                    else:
+                        msg['To'] = lines[int(entryEmailColumn.get())]
+                        print("Sending Email to : " + lines[int(entryEmailColumn.get())])
 
-            smtp.send_message(msg)
-            print("Email message sent")
+                    #try:
+                    attachmentCertificateName = 'OutputCertificates/' +  lines[int(entryNameColumn.get())] + ".pdf"
+                    attachment = open(attachmentCertificateName, 'rb')
+                    attachment_package = MIMEBase('application', 'octet-stream')
+                    attachment_package.set_payload((attachment).read())
+                    encoders.encode_base64(attachment_package)
+                    attachment_package.add_header('Content-Disposition', "attachment; filename= " + attachmentCertificateName)
+                    msg.attach(attachment_package)
+                    #except:
+                        #print("Could not fetch/open certificate for participant - " + lines[int(entryNameColumn.get())])
+                    try:
+                        with smtplib.SMTP(host="smtp.gmail.com", port = 587) as smtp:
+                            smtp.ehlo()
+                            smtp.starttls()
+                            smtp.login(entryEmailID.get(),entryEmailPassword.get())
+                            smtp.send_message(msg)
+                            print("Email sent to " + lines[int(entryEmailColumn.get())])
+                    except:
+                        print("Error sending email to : " + lines[int(entryNameColumn.get())] + ". Participant - " + lines[int(entryNameColumn.get())]+". Please try sending them an email manually. Possible reason - Bad Email Address.")
+                    
+                    if(testEmail):
+                        break
 
     def imageDownloader():
             with open('userData.csv', 'r') as csvfile:
