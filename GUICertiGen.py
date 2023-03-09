@@ -14,7 +14,7 @@ from email.mime.base import MIMEBase
 from email import encoders
 import smtplib
 from pathlib import Path
-
+from PIL import Image
 
 def createframeMainFunction():
 
@@ -89,84 +89,47 @@ def createframeMainFunction():
 
                     print("Image Downloaded")
 
-    def createPDF():
-        with open('userData.csv', 'r') as csvfile:
-            data = csv.reader(csvfile)
-            for lines in data:
-                image = "Hello " + lines[0]
-                print ("Creating PDF for participant " + lines[1])
+    def createPDF(testCertificate):
 
-                lenName = len(lines[1])
+        template = Image.open(labelTemplateSelectedName.cget("text"))
 
-                #code to dynamically add hyphen to the left and right of name
-                nameInCertificate=''
-                for i in range(int((60-lenName)/2)):
-                    nameInCertificate+='-'
-                nameInCertificate+=' '
-                nameInCertificate+=lines[1]
-                nameInCertificate+=' '
-                for i in range(int((60-lenName)/2)):
-                    nameInCertificate+='-'
-                    
+        hex = entryNameColor.get().lstrip('#')
 
-                #change directory
-                imagePath = "ImageDisplay/" + lines[1] + ".jpg"
-                fpdf = FPDF()
-                body = FPDF()
-                heading = FPDF()
-                bottomBold = FPDF()
-                bottomLight = FPDF()
+        rgbColor =tuple(int(hex[i:i+2], 16) for i in (0, 2, 4))
+        print(rgbColor)
 
-                fpdf.add_page('l')
-                body = fpdf
-                bottomBold = fpdf
-                bottomLight = fpdf
-                heading = fpdf
+        dpi = template.info['dpi']
+        width = template.width *25.4 / dpi[0]
+        height = template.height *25.4 / dpi[0]
 
-                fpdf.set_font("Arial",size=50)
-                fpdf.set_text_color(48,107,149)
-                fpdf.add_link()
-                
-
-                fpdf.text(9,30,txt="Certificate of Participation")
-                fpdf.image("collegeLogo.png", 230,8,w=50)
-
-                heading.set_font("Helvetica",size=15)
-                heading.set_text_color(200,0,0)
-                heading.write(60,"C.K. Pithawala College of Engineering and Technology","https://ckpcet.ac.in/")
-                
-                body.set_font("Courier",size=21)
-                body.set_text_color(0,107,0)
-
-                body.multi_cell(0,10,"\n\n\n\n\n\n\n\n\n\n"); 
-                body.image(imagePath,240, 60, w = 35)
-                body.image("excellence.png", 15, 62, w = 40)
-            ##
-                fpdf.multi_cell(0, 10, "This is to certify that \n"+nameInCertificate+"\nfrom CKPCET has successfully participated in an E-Webinar on Machine Learning on October 20, 2022 organized at Computer Engineering Department.", border = 0)
-
-                bottomBold.set_font("Arial",size=17)
-                bottomBold.set_text_color(0,0,0)
-                bottomBold.text(5, 200, "Coordinator and Head, CO:")
-                bottomBold.text(240, 200, "Principal:")
-
-                bottomLight.set_font("Helvetica",size=14)
-                bottomLight.set_text_color(0,0,0)
-                bottomLight.text(5, 205, "Dr. Ami T. Choksi")
-                bottomLight.text(240, 205, "Dr. Anish H. Gandhi")
-
-                bottomLight.image("hodSign.png", 20, 180, w = 40 )
-                bottomLight.image("principalSign.png", 240, 177, w = 40 )
-
-                pdfName ="OutputCertificates/" + lines[1] + ".pdf"
-
-                body.output(pdfName)
-                fpdf.output(pdfName)
-                heading.output(pdfName)
-                bottomBold.output(pdfName)
-                bottomLight.output(pdfName)
-
-                print("PDF Created")
+        page1 = FPDF('l', 'mm', [height,width])
+        page1.add_page()
         
+        page1.image(labelTemplateSelectedName.cget("text"), 0, 0, w = width, h=height )
+        body = page1
+        body.set_font("Arial",size=int(entryNameSize.get()))
+        body.set_text_color(int(rgbColor[0]),int(rgbColor[1]),int(rgbColor[2]))
+
+        with open(labelCSVSelectedName.cget("text"), 'r') as csvfile:
+            print("Inside create PDF")
+            data = csv.reader(csvfile)
+
+            nameColumn = int(entryNameColumn.get()) - 1
+            
+            for lines in data:
+                print ("Creating PDF for participant " + lines[int(nameColumn)])
+
+                body.text(int(entryNameX.get()),int(entryNameY.get()),lines[int(nameColumn)])
+
+                pdfName = projectName + "/OutputCertificates/" + lines[int(nameColumn)] + ".pdf"
+                body.output("Certi1.pdf")
+                page1.output("Certi1.pdf")
+
+                print("Certificate created for " + lines[int(nameColumn)])
+
+                if(int(testCertificate) == 1):
+                    break
+
 
     def addFont():
         print("Clicked Added Font")
@@ -286,16 +249,16 @@ def createframeMainFunction():
     entryPhotoColumn.pack(side=LEFT, padx=5, pady=10)
 
     Label(framePhotoColumn,text='X : ', font=("Arial", 13)).pack(side=LEFT, pady=10)
-    entryNameX = Entry(framePhotoColumn, font=("Arial",17), width=3)
-    entryNameX.pack(side=LEFT, padx=5, pady=10)
+    entryPhotoX = Entry(framePhotoColumn, font=("Arial",17), width=3)
+    entryPhotoX.pack(side=LEFT, padx=5, pady=10)
 
     Label(framePhotoColumn,text='Y : ', font=("Arial", 13)).pack(side=LEFT, pady=10)
-    entryNameY = Entry(framePhotoColumn, font=("Arial",17), width=3)
-    entryNameY.pack(side=LEFT, padx=5, pady=10)
+    entryPhotoY = Entry(framePhotoColumn, font=("Arial",17), width=3)
+    entryPhotoY.pack(side=LEFT, padx=5, pady=10)
 
     Label(framePhotoColumn,text='Size : ', font=("Arial", 13)).pack(side=LEFT, pady=10)
-    entryNameSize = Entry(framePhotoColumn, font=("Arial",17), width=3)
-    entryNameSize.pack(side=LEFT, padx=5, pady=10)
+    entryPhotoSize = Entry(framePhotoColumn, font=("Arial",17), width=3)
+    entryPhotoSize.pack(side=LEFT, padx=5, pady=10)
 
     frameEmailColumn = Frame(frameMain)
     frameEmailColumn.pack()
@@ -338,19 +301,15 @@ def createframeMainFunction():
     frameProceedButtons = Frame(frameMain, bg="#f2ebee")
     frameProceedButtons.pack(side=BOTTOM)
 
-    buttonGenerateTestCertificate = Button(frameProceedButtons, text="Generate Test Certificate", command=addStaticFields)
+    buttonGenerateTestCertificate = Button(frameProceedButtons, text="Generate Test Certificate", command=lambda: createPDF(1))
     buttonGenerateTestCertificate.pack(side=LEFT,padx=7)
 
-    #Add a warning window to Send Test Email - Indicate that it will go to the first email from CSV or ask for an email in new window
     buttonSendTestEmail = Button(frameProceedButtons, text="Send Test Email", command=lambda: sendEmail(1))
     buttonSendTestEmail.pack(side=LEFT,padx=7)
 
     #Add a warning window
     buttonGenerateAllCertificates = Button(frameProceedButtons, text="Generate & Email - All")
-    buttonGenerateAllCertificates.pack()
-
-
-    
+    buttonGenerateAllCertificates.pack() 
 
 def createFirstWindowFunction():
     firstWindow = Tk()
