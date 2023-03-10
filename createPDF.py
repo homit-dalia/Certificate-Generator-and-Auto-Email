@@ -7,7 +7,6 @@ imgSource = "template.jpg"
 img = Image.open(imgSource)
 
 
-
 width = img.width *25.4 / 128
 height = img.height *25.4 / 128
 dpi = img.info['dpi']
@@ -23,7 +22,7 @@ page1.add_page()
 
 page1.image(imgSource, 0, 0, w = width, h=height )
 
-# page1.set_font("Arial",size=50)
-# page1.text(20,20,"Hello")
+page1.set_font("Arial",size=50)
+page1.text(20,20,"Hello")
 
 page1.output("Certi1.pdf")
