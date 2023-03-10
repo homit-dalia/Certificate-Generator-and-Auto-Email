@@ -21,7 +21,12 @@ def createframeMainFunction():
 
     def sendEmail(testEmail):
 
-        if messagebox.askyesno(title="Do you want to send the email?", message="Proceeding will email all the participants with their respective certificates."):
+        if(testEmail):
+            message = 1
+        else:
+            message = messagebox.askyesno(title="Do you want to send the email?", message="Proceeding will email all the participants with their respective certificates.")
+
+        if(message):
             #fixed fields in email
             from_addr = entryEmailID.get()
             msg = MIMEMultipart()
