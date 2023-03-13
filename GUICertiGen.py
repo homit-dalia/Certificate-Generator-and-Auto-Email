@@ -83,7 +83,7 @@ def createframeMainFunction():
                         if(testEmail):
                             break
         else:
-            print("You selected no to email participants.")
+            print("You selected 'No' to email participants.")
        
 
     def imageDownloader():
