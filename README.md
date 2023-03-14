@@ -19,7 +19,6 @@ Please note :
    Color should be specified in Hex and it is not necessary to put "#" in the field.
    
 ## Q. How to generate sender password for auto email?
-## Q. Password shows up as wrong.
 > => Steps to generate password for Gmail account. (other email providers might have similar steps, please look for a tutorial on Youtube)
 >>      1. Login to your account
 >>      2. Go to https://myaccount.google.com/
