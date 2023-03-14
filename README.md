@@ -20,15 +20,15 @@ What does "X", "Y", "Size", "Color" mean?
    
 How to generate sender password for auto email?
 Password shows up as wrong.
-=> Steps to generate password for Gmail account. (other email providers might have similar steps, please look for a tutorial on Youtube)
-      1. Login to your account
-      2. Go to https://myaccount.google.com/
-      3. Go to "App Passwords" and not "Passwords". If you cannot find App Passwords, go to step Extra 1 and continue.
-      4. Click on "Select App" > "Other" and name it whatever you want, and then do the same for "Select Device" if asked.
-      5. Click on "Generate".
-      6. You will be shown a 16 digit password.
-         This is your password that you will enter in the Certificate Generator and Auto Email. Store the password somewhere as it can be deleted later but never be recovered. Do not share it with anyone. If you forget/misplace the password, you should delete it and generate a new one.
+> => Steps to generate password for Gmail account. (other email providers might have similar steps, please look for a tutorial on Youtube)
+>>      1. Login to your account
+>>      2. Go to https://myaccount.google.com/
+>>      3. Go to "App Passwords" and not "Passwords". If you cannot find App Passwords, go to step Extra 1 and continue.
+>>      4. Click on "Select App" > "Other" and name it whatever you want, and then do the same for "Select Device" if asked.
+>>      5. Click on "Generate".
+>>      6. You will be shown a 16 digit password.
+>>>         This is your password that you will enter in the Certificate Generator and Auto Email. Store the password somewhere as it can be deleted later but never be recovered. Do not share it with anyone. If you forget/misplace the password, you should delete it and generate a new one.
       
-      Extra 1. Your web link looks like this => https://myaccount.google.com/u/1/?tab=kk.
+>>      Extra 1. Your web link looks like this => https://myaccount.google.com/u/1/?tab=kk.
                Replace the link to https://myaccount.google.com/u/1/apppasswords
                           
