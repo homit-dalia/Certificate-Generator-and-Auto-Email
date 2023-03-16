@@ -115,13 +115,17 @@ def createframeMainFunction():
         template = Image.open(labelTemplateSelectedName.cget("text"))
 
         hex = entryNameColor.get().lstrip('#')
-
         rgbColor =tuple(int(hex[i:i+2], 16) for i in (0, 2, 4))
 
-        dpi = template.info['dpi']
-        #dpi = 96 
-        #remove "#" from above line and replace 96 with your image dpi
-        updateLog("Error fetching DPI of your template. DPI of your template is required to generate size of the pdf, which should be the same as your template. \n      Please open GUICertiGen.py and specify it manually on line 122")
+        try:
+            dpi = template.info['dpi']
+            #dpi = 96 
+            #remove "#" from above line and replace 96 with your image dpi
+        except:
+            updateLog("Error fetching DPI of your template. DPI of your template is required to generate size of the pdf, which should be the same as your template. \n      Please open GUICertiGen.py and specify it manually on line 122")
+
+
+
         width = template.width *25.4 / dpi[0]
         height = template.height *25.4 / dpi[0]
         
