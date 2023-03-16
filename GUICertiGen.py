@@ -17,6 +17,12 @@ from email import encoders
 import smtplib
 
 
+def updateLog(text):
+    with open(projectName + '/log.txt', 'a') as logFile:
+        logFile.write("\n" + text)
+
+
+
 def createframeMainFunction():
 
     def sendEmail(testEmail):
@@ -43,7 +49,7 @@ def createframeMainFunction():
                     incorrectEmailIDPassword = False
             except:
                 incorrectEmailIDPassword = True
-                print("Email ID and/or password is incorrect. Please try again.")
+                updateLog("Email ID and/or password is incorrect. Please try again.")
 
             if(incorrectEmailIDPassword == False):
                 with open(labelCSVSelectedName.cget("text"), 'r') as csvfile:
@@ -52,11 +58,11 @@ def createframeMainFunction():
                     for lines in csvData:
                         if(testEmail):
                             msg['To'] = entryEmailID.get()
-                            print("Sending Test Email to : " + entryEmailID.get())
+                            updateLog("Sending Test Email to : " + entryEmailID.get())
 
                         else:
                             msg['To'] = lines[int(entryEmailColumn.get())-1]
-                            print("Sending Email to : " + lines[int(entryEmailColumn.get())-1])
+                            updateLog("Sending Email to : " + lines[int(entryEmailColumn.get())-1])
 
                         try:
                             attachmentCertificateName = lines[int(entryNameColumn.get())-1] + ".pdf"
@@ -68,7 +74,7 @@ def createframeMainFunction():
                             attachment_package.add_header('Content-Disposition', "attachment; filename= " + attachmentCertificateName)
                             msg.attach(attachment_package)
                         except:
-                            print("Could not fetch/open certificate for participant - " + lines[int(entryNameColumn.get())-1])
+                            updateLog("Could not fetch/open certificate for participant - " + lines[int(entryNameColumn.get())-1])
 
                         try:
                             with smtplib.SMTP(host="smtp.gmail.com", port = 587) as smtp:
@@ -76,14 +82,18 @@ def createframeMainFunction():
                                 smtp.starttls()
                                 smtp.login(entryEmailID.get(),entryEmailPassword.get())
                                 smtp.send_message(msg)
-                                print("Email sent to " + lines[int(entryEmailColumn.get())-1])
+                                if(testEmail):
+                                    updateLog("Email sent to " + entryEmailID.get())
+                                else:
+                                    updateLog("Email sent to " + lines[int(entryEmailColumn.get())-1])
+
                         except:
-                            print("Error sending email to : participant - " + lines[int(entryNameColumn.get())-1]+". Please try sending them an email manually. Possible reason - Bad Email Address.")
+                            updateLog("Error sending email to : participant - " + lines[int(entryNameColumn.get())-1]+". Please try sending them an email manually. Possible reason - Bad Email Address.")
                         
                         if(testEmail):
                             break
         else:
-            print("You selected 'No' to email participants.")
+            updateLog("You selected 'No' to email participants.")
        
 
     def imageDownloader():
@@ -91,14 +101,14 @@ def createframeMainFunction():
                 data = csv.reader(csvfile)
                 for lines in data:
                     url = lines[2]
-                    print ("Downloading image for " + lines[1])
+                    updateLog ("Downloading image for " + lines[1])
 
                     image_url = url
     #does not work with drive links. Imgur or any other links ending with .jpg/.jpeg/.png works. Please use jpg or png format
                     filename = "ImageDisplay/" + lines[1] + ".jpg"
                     urllib.request.urlretrieve(image_url, filename)
 
-                    print("Image Downloaded")
+                    updateLog("Image Downloaded")
 
     def createPDF(testCertificate):
 
@@ -107,9 +117,11 @@ def createframeMainFunction():
         hex = entryNameColor.get().lstrip('#')
 
         rgbColor =tuple(int(hex[i:i+2], 16) for i in (0, 2, 4))
-        print(rgbColor)
 
         dpi = template.info['dpi']
+        #dpi = 96 
+        #remove "#" from above line and replace 96 with your image dpi
+        updateLog("Error fetching DPI of your template. DPI of your template is required to generate size of the pdf, which should be the same as your template. \n      Please open GUICertiGen.py and specify it manually on line 122")
         width = template.width *25.4 / dpi[0]
         height = template.height *25.4 / dpi[0]
         
@@ -129,7 +141,7 @@ def createframeMainFunction():
                     body.set_font("Arial",size=int(entryNameSize.get()))
                     body.set_text_color(int(rgbColor[0]),int(rgbColor[1]),int(rgbColor[2]))
 
-                    print ("Creating PDF for participant " + lines[int(nameColumn)])
+                    updateLog ("Creating PDF for participant " + lines[int(nameColumn)])
 
                     body.text(int(entryNameX.get()),int(entryNameY.get()),lines[int(nameColumn)])
 
@@ -137,24 +149,24 @@ def createframeMainFunction():
                     body.output(pdfName)
                     page1.output(pdfName)
 
-                    print("Certificate created for " + lines[int(nameColumn)])
+                    updateLog("Certificate created for " + lines[int(nameColumn)])
                 except:
-                    print("Error creating certificate for " + lines[int(nameColumn)])
+                    updateLog("Error creating certificate for " + lines[int(nameColumn)])
 
                 if(testCertificate):
                     break
         if(testCertificate):
-            print("Did not email as it is a test certificate")
+            updateLog("Did not email as it is a test certificate")
 
 
     def addFont():
-        print("Clicked Added Font")
+        updateLog("Clicked Added Font")
     
     def generateAllCertificatesAndEmail():
         if messagebox.askyesno(title="Generate Certificates for all the entries?", message="Proceeding will freeze the interface for a while. Sit tight and relax!"):
             createPDF(0)
         else:
-            print("Cancelled generate all certificates")
+            updateLog("Cancelled generate all certificates")
 
         #Add a warning that Window will hang and a warning - Contine \ Cancel
 
@@ -201,7 +213,7 @@ def createframeMainFunction():
     def selectCSVFileFunction():
         csvFileDIR = filedialog.askopenfilename(initialdir=os.curdir, title="Open a CSV File", filetypes=(("CSV File","*.csv"),("all files","*.*")))
 
-        print('CSV File Selected: ', csvFileDIR)
+        updateLog('CSV File Selected: ' + csvFileDIR)
         labelCSVSelectedName.config(text=csvFileDIR)
 
     labelCSVSelectedName = Label(frameCSVFile, text="",fg='#BDBEC0', bg = "#363940", font=("Arial",11))
@@ -228,7 +240,7 @@ def createframeMainFunction():
     def selectTemplateButton():
         templateFileDIR = filedialog.askopenfilename(initialdir=os.curdir, title="Open an Image File", filetypes=(("JPEG File","*.jpg"),("PNG File","*.png"),("all files","*.*")))
 
-        print('Image File Selected: ', templateFileDIR)
+        updateLog('Image File Selected: ' + templateFileDIR)
         labelTemplateSelectedName.config(text=templateFileDIR)
 
     labelTemplateSelectedName = Label(frameSelectTemplate, text="",fg='#BDBEC0', bg = "#363940", font=("Arial",11))
@@ -355,27 +367,26 @@ def createFirstWindowFunction():
 
 
 
-    def buttonPress():
+    def createProject():
         if(entryProjectName.get() != ""):
             #error - restrict empty folder name and slashes.
             global projectName
             projectName = entryProjectName.get()
-                       
-            print("Project name is "+'"'+projectName+'"'+". Creating a directory named the folder.")
             try:
                 os.mkdir(projectName)
+                updateLog("Project name is "+'"'+projectName+'"'+". Creating a directory named the folder.")
             except:
-                print("An error occured - Directory already exists. ")
+                updateLog("An error occured - Directory already exists. ")
             
             createframeMainFunction()
             firstWindow.destroy()
         else:
-            print("Project name cannot be null")
+            updateLog("Project name cannot be null")
             messagebox.showerror(title="Project Name cannot be empty", message="Try a different name" )
 
 
     right_arrow_blue = PhotoImage(file="source_images/right_arrow_blue.png")
-    buttonSaveProjectName = Button(projectNameFrame, text=" Create Project", font=("Arial",11), activebackground='#363940',command=buttonPress, image=right_arrow_blue,compound=LEFT).pack(side=TOP, pady=10)
+    buttonSaveProjectName = Button(projectNameFrame, text=" Create Project", font=("Arial",11), activebackground='#363940',command=createProject, image=right_arrow_blue,compound=LEFT).pack(side=TOP, pady=10)
     label = Label(projectNameFrame, text="""A folder with your project name will be created in current directory,\n to store temporary and final files (pdfs) to be emailed. \nOnce created, you can access them without using this application.\n\nPlease do not use same folder names and refrain \nfrom using forward/back slash, as it can cause issues \nfetching attachments from source.""",fg='#BDBEC0', bg = "#363940", font=("Arial",11))
     label.pack(pady=10)
     firstWindow.title("Certificate Generator")
