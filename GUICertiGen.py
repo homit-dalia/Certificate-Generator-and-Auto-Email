@@ -121,6 +121,7 @@ def createframeMainFunction():
             dpi = template.info['dpi']
             #dpi = 96 
             #remove "#" from above line and replace 96 with your image dpi
+            #necessary
         except:
             updateLog("Error fetching DPI of your template. DPI of your template is required to generate size of the pdf, which should be the same as your template. \n      Please open GUICertiGen.py and specify it manually on line 122")
 
