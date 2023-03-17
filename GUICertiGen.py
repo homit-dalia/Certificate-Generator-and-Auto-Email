@@ -21,8 +21,6 @@ def updateLog(text):
     with open(projectName + '/log.txt', 'a') as logFile:
         logFile.write("\n" + text)
 
-
-
 def createframeMainFunction():
 
     def sendEmail(testEmail):
