@@ -1,0 +1,4 @@
+tk
+fpdf
+email
+smtplib
